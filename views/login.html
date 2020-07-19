@@ -56,6 +56,10 @@
 			methods: {
 				login() {
 					console.log(this.username);
+					if(this.username==""){
+						return;
+					}
+
 					axios({
 						method: 'post',
 						url: '/validatelogin',
