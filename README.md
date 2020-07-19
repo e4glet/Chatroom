@@ -22,6 +22,12 @@
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0719/155136_fdd250a8_1651640.png "3.png")
 
+更新可选头像功能
+
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0720/024205_7c824b58_1651640.png "001.png")
+
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0720/024215_83619d8a_1651640.png "002.png")
+
     
 ### 三、环境要求
 - nodejs v7.6.0及以上版本，当前项目构建于v12.16.1版本
@@ -94,6 +100,9 @@ docker run -dit -p 8081:3000 -p 8082:8082 --name mychat e4glet/chatroom
 
 
 ### 更新日志
+- 2020年7月20日
+1. 优化UI界面,细节优化
+2. 增加用户头像选择功能，并完善聊天列表内容
 
 - 2020年7月19日
 1. 增加聊天表情包功能（纯自定义vue.js实现，未使用插件）

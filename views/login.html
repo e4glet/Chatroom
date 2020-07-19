@@ -19,14 +19,24 @@
 		</div>
 		<div class="container">
 			<div class="login_panel">
-				
-				<div class="">
-					<input id="user" class="form-control" v-model="username" placeholder="请您输入昵称" type="text"><button type="button" @click="login()" v-on:keyup.13="login()" class="btn btn-primary">确认</button>
+				<div class="img_head_panel">
+					<img @click="show_img()" class="img_head" v-bind:src="default_img" alt="点击修改头像" />
+					<span class="img_tip">
+						点击修改头像
+					</span>
+					<div v-if="show" class="sel-img">
+						<ul>
+							<li v-for="(item,index) in img_list" :key="index">
+								<img @click="select_img(item.src)" v-bind:src="item.src" />
+							</li>
+						</ul>
+					</div>
 				</div>
 				<div class="">
-					
+					<input id="user" maxlength="10" class="form-control" v-model="username" placeholder="请您输入昵称"
+						type="text"><button type="button" @click="login()" v-on:keyup.13="login()"
+						class="btn btn-primary">确认</button>
 				</div>
-				
 			</div>
 		</div>
 	</div>
@@ -34,7 +44,11 @@
 		new Vue({
 			el: '#app',
 			data: {
-				username: ''
+				username: '',
+				default_img: "assets/img/users/user-1.jpg",
+				img_Num: 5,
+				img_list: [],
+				show: false
 			},
 			created() {
 				window.addEventListener('keydown', this.KeyUpEnter, true)//开启监听键盘按下事件
@@ -46,7 +60,8 @@
 						method: 'post',
 						url: '/validatelogin',
 						data: {
-							username: this.username
+							username: this.username,
+							userimg: this.default_img
 						}
 					})
 						.then((res) => {
@@ -60,10 +75,28 @@
 							console.log(err);
 						})
 				},
+				show_img() {
+					this.show = !this.show
+				},
+				select_img(e) {
+					this.default_img = e
+
+					//关闭表情选择器并将内容赋值到input表签内
+					this.show = false;
+				},
 				KeyUpEnter(e) {
 					if (window.event.keyCode === 13) {
 						this.login()
 					}
+				}
+			},
+			mounted: function () {
+				var _this = this;
+				for (i = 1; i <= _this.img_Num; i++) {
+					var imgs = new Object()
+					imgs.id = i;
+					imgs.src = "assets/img/users/user-" + i + ".jpg";
+					_this.img_list.push(imgs);
 				}
 			}
 		})

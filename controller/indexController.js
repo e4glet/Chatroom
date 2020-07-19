@@ -43,9 +43,9 @@ function indexController(router) {
 	//登录请求
 	router.post('/validatelogin', async (ctx, next) => {
 		//let {username,password} = ctx.request.body //获取post提交的数据
-		let {username} = ctx.request.body
+		let {username,userimg} = ctx.request.body
 		//let data = await userdal.checkUser(username,password)
-		ctx.session.user = username		
+		ctx.session.user = {username:username,userimg:userimg}		
 
 		var data = {
 			code: 200,

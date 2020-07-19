@@ -34,9 +34,9 @@
 										style="height: 450px; overflow-y:auto; outline: none;">
 										<ul id="ulist" class="chat-list list-unstyled m-b-0">
 											<li v-for="(user,index) in users" :key="index" class="clearfix"><img
-													src="assets/img/users/user-1.jpg" alt="avatar">
+													v-bind:src="user.userimg" alt="avatar">
 												<div class="about">
-													<div class="name">{{user}}</div>
+													<div class="name" v-cloak>{{user.username}}</div>
 													<div class="status"><i class="fa fa-circle online"></i> 在线 </div>
 												</div>
 											</li>
@@ -58,7 +58,7 @@
 								</div>
 								<div class="chat-about">
 									<div class="chat-with">消息窗口</div>
-									<div class="chat-num-messages">{{welcome}}</div>
+									<div class="chat-num-messages" v-cloak>{{welcome}}</div>
 								</div>
 
 							</div>
@@ -69,15 +69,24 @@
 							<div class="card-body chat-content" tabindex="2"
 								style="overflow-y:scroll; ; outline: none;">
 								<div id="message">
-									<div class="chat-item chat-left" v-for="(item,index) in messageList" :key="index">
-										<img src="assets/img/users/message.jpg">
-										<div class="chat-details">
-											<div class="chat-text" v-html="item.msg"></div>
-											<div class="chat-time">{{item.time}}</div>
+									<div v-for="(item,index) in messageList" :key="index" >
+										<div v-if="item.is_Self" class="chat-item chat-left" >
+											<img v-bind:src="item.userimg">
+											<div class="chat-details">
+												<div class="chat-text" v-html="item.msg"></div>
+												<div class="chat-time" v-cloak>{{item.time}}</div>
+											</div>
+										</div>
+										<div v-else class="chat-item chat-right" >
+											<img v-bind:src="item.userimg">
+											<div class="chat-details">
+												<div class="chat-text" v-html="item.msg"></div>
+												<div class="chat-time" v-cloak>{{item.time}}</div>
+											</div>
 										</div>
 									</div>
+									
 								</div>
-
 							</div>
 							<div id="form" class="card-footer chat-form">
 								<div class="chat-bar">
@@ -88,14 +97,16 @@
 												<img @click="select_emot(item.id)" v-bind:alt="item.id"
 													v-bind:src="item.src" />
 											</li>
-
 										</ul>
 									</div>
 								</div>
-								<div id="chat-form"><input type="text" v-model="message" class="form-control"
+								<div id="chat-form"><input type="text" maxlength="50" v-model="message" class="form-control"
 										placeholder="输入消息">
 									<button @click="sendMsg()" @keyup.enter="sendMsg()" class="btn btn-primary"><i
 											class="fa fa-paper-plane"></i></button></div>
+											<div class="chat-tip">
+												Enter 发送消息
+											</div>
 							</div>
 						</div>
 					</div>
@@ -111,6 +122,7 @@
 			el: '#app',
 			data: {
 				message: '',
+				my_img:'',
 				welcome: "欢迎进入聊天室！",
 				messageList: [],
 				user: '',
@@ -140,18 +152,26 @@
 				})
 					.then((res) => {
 						if (res.data.code == 200) {
-							_this.user = res.data.data;
+							//从session中获取用户信息
+							_this.user = res.data.data.username;
+							_this.my_img = res.data.data.userimg;
 							var name = _this.user;
 
+							var userInfo =new Object();
+							userInfo.username = name;
+							userInfo.userimg = _this.my_img;
+
+
 							//发送昵称给后端
-							socket.emit("join", name)
+							socket.emit("join", userInfo)
 							//新用户上线提示
 							socket.on("join", function (data) {
-								var msg = "系统消息： " + "用户 " + data.user + " 进入了聊天室";
+								var username = data.user;
+								var msg = "系统消息： " + "用户 " + username + " 进入了聊天室";
 								_this.getCurrentTime()
-								var newdata = { user: data.user, msg: msg, time: _this.currentTime }
+								var newdata = { user: username,userimg:"assets/img/users/message.jpg", msg: msg, time: _this.currentTime,is_Self:true }
 								addLine(newdata)
-								console.log(data.user + "进入")
+								
 								_this.users = data.users
 							})
 							//用户下线
@@ -159,12 +179,22 @@
 								_this.users = data.users
 								var msg = data.username + " 离开了聊天室"
 								_this.getCurrentTime()
-								addLine({ user: data.user, msg: msg, time: _this.currentTime })
+								addLine({ user: data.user,userimg:"assets/img/users/message.jpg", msg: msg, time: _this.currentTime,is_Self:true})
 							})
 							//从后端接收消息
 							socket.on('chat message', function (data) {
+								var filterdata=new Object();
+								filterdata.user = data.user;
+								filterdata.msg = data.msg;
+								filterdata.time = data.time;
+								if(data.user==_this.user){
+									data.is_Self=false
+								}else{
+									data.is_Self=true
+								}
 								addLine(data);
 								_this.scrollToBottom();
+								
 							});
 
 							//自定义添加一行信息：新上线用户
@@ -187,11 +217,11 @@
 						return;
 					}
 					var msg = this.user + "说: " + this.replace_em(this.message);
-					console.log("发送的消息内容是："+msg)
+					//console.log("发送的消息内容是：" + msg)
 					this.getCurrentTime();
-					var posttime = this.currentTime
+					var posttime = this.currentTime					
 					//data = {user:this.user,msg:this.message,time:posttime}
-					socket.emit('chat message', { user: this.user, msg: msg, time: posttime });
+					socket.emit('chat message', { user: this.user,userimg:this.my_img, msg: msg, time: posttime });
 
 				},
 				sayTo(e) {

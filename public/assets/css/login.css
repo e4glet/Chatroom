@@ -8,6 +8,12 @@ body {
 	margin: 0;
 }
 
+ul,li{
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+
 .home-header {
 	max-width: 1024px;
 	margin: 0 auto;
@@ -22,44 +28,71 @@ body {
 	position: relative;
 }
 
-.login_panel{
+.login_panel {
 	margin: 200px auto;
 	width: 500px;
 	text-align: center;
 }
 
 .btn:not(:disabled):not(.disabled) {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 .btn-primary {
 	color: #FFFFFF;
-    background-color: #007bff;
-    border-color: #007bff;
+	background-color: #007bff;
+	border-color: #007bff;
 }
+
 .btn {
-    display: inline-block;
-    font-weight: 400;
-    
-    border: 1px solid transparent;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    line-height: 1.5;
-    border-radius: .25rem;
-    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	display: inline-block;
+	font-weight: 400;
+	border: 1px solid transparent;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	line-height: 1.5;
+	border-radius: .25rem;
+	transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
 .form-control {
-    display: inline-block;
-    width: 200px;
-    padding: .375rem .75rem;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #fff;
-    background-clip: padding-box;
-    border: 1px solid #ced4da;
-    border-radius: .25rem;
-    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+	display: inline-block;
+	width: 200px;
+	padding: .375rem .75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #495057;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #ced4da;
+	border-radius: .25rem;
+	transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.login_panel .img_head_panel img{
+	width: 70px;
+	height: 70px;
+	border-radius: 50%;
+	cursor: pointer;
+	border: 1px solid #999999;
+}
+
+.login_panel .img_head_panel {
+	margin-bottom: 10px;
+	position: relative;
+}
+
+.sel-img{
+	position: absolute;
+	background: #FFFFFF;
+	border: 1px solid #999999;
+	top:0%;
+	left: 43%;	
+	z-index: 10;
+}
+
+.img_tip{
+	display: block;
+	text-align: center;
 }
