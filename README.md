@@ -16,6 +16,12 @@
 
 ![输入图片说明](https://images.gitee.com/uploads/images/2020/0719/003502_ea2705ae_1651640.png "QQ图片20200719003428.png")
 
+新增消息表情包支持  
+
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0719/155128_93be3911_1651640.png "2.png")
+
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0719/155136_fdd250a8_1651640.png "3.png")
+
     
 ### 三、环境要求
 - nodejs v7.6.0及以上版本，当前项目构建于v12.16.1版本
