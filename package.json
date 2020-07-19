@@ -1,0 +1,23 @@
+{
+  "name": "chatroom",
+  "version": "1.0.0",
+  "description": "nodejs_koa_vue",
+  "main": "app.js",
+  "dependencies": {
+    "koa": "^2.6.2",
+    "koa-bodyparser": "^4.2.1",
+    "koa-ejs": "^4.3.0",
+    "koa-router": "^7.4.0",
+    "koa-session": "^6.0.0",
+    "koa-static": "^5.0.0",
+    "koa-views": "^6.2.1",
+    "mysql": "^2.18.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "supervisor app.js"
+  },
+  "author": "e4glet",
+  "license": "ISC"
+}

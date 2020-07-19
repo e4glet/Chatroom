@@ -1,0 +1,65 @@
+body {
+	background-color: #f6f6f6;
+	font-size: 14px;
+	font-weight: 400;
+	font-family: "Nunito", "Segoe UI", arial;
+	color: #6c757d;
+	padding: 0;
+	margin: 0;
+}
+
+.home-header {
+	max-width: 1024px;
+	margin: 0 auto;
+	height: 50px;
+	padding: 15px 0;
+	text-align: center;
+}
+
+.container {
+	padding-left: 100px;
+	padding-right: 100px;
+	position: relative;
+}
+
+.login_panel{
+	margin: 200px auto;
+	width: 500px;
+	text-align: center;
+}
+
+.btn:not(:disabled):not(.disabled) {
+    cursor: pointer;
+}
+
+.btn-primary {
+	color: #FFFFFF;
+    background-color: #007bff;
+    border-color: #007bff;
+}
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    
+    border: 1px solid transparent;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: .25rem;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.form-control {
+    display: inline-block;
+    width: 200px;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}

@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>聊天室</title>
+	<meta http-equiv="x-ua-compatible" content="IE=edge" />
+	<link rel="stylesheet" type="text/css" href="assets/css/base.css" />
+	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css" />
+	<script src="js/vue.min.js"></script>
+	<script src="js/axios.min.js"></script>
+</head>
+
+
+<body>
+	<div id="app">
+		<div class="row">
+			<div class="home-header">
+				<h1>简易聊天室</h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class="main_content clearfix">
+				<div class="my_ulist">
+					<div class="card">
+						<div class="body">
+							<div class="chat-header">
+								<h2>用户列表：</h2>
+							</div>
+							<div class=".m-b-20">
+								<div id="u-list" class="u-list">
+									<div id="chat-scroll" tabindex="1"
+										style="height: 450px; overflow-y:auto; outline: none;">
+										<ul id="ulist" class="chat-list list-unstyled m-b-0">
+											<li v-for="(user,index) in users" :key="index" class="clearfix"><img
+													src="assets/img/users/user-1.jpg" alt="avatar">
+												<div class="about">
+													<div class="name">{{user}}</div>
+													<div class="status"><i class="fa fa-circle online"></i> 在线 </div>
+												</div>
+											</li>
+
+										</ul>
+									</div>
+								</div>
+							</div>
+
+						</div>
+					</div>
+				</div>
+				<div class="my_chatbody">
+					<div class="card">
+						<div class="chat">
+							<div class="chat-header clearfix">
+								<div class="home-ico">
+									<i class="fa fa-home" aria-hidden="true"></i>
+								</div>
+								<div class="chat-about">
+									<div class="chat-with">消息窗口</div>
+									<div class="chat-num-messages">{{welcome}}</div>
+								</div>
+
+							</div>
+
+						</div>
+
+						<div class="chat-box" id="mychatbox">
+							<div class="card-body chat-content" tabindex="2"
+								style="overflow-y:scroll; ; outline: none;">
+								<div id="message">
+									<div class="chat-item chat-left" v-for="(item,index) in messageList" :key="index">
+										<img src="assets/img/users/message.jpg">
+										<div class="chat-details">
+											<div class="chat-text" v-html="item.msg"></div>
+											<div class="chat-time">{{item.time}}</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+							<div id="form" class="card-footer chat-form">
+								<div class="chat-bar">
+									<i @click="show_emot()" class="fa fa-smile-o"></i>
+									<div v-if="show" class="chat-emotion">
+										<ul class="emot-list clearfix">
+											<li v-for="(item,index) in emot_list" :key="index">
+												<img @click="select_emot(item.id)" v-bind:alt="item.id"
+													v-bind:src="item.src" />
+											</li>
+
+										</ul>
+									</div>
+								</div>
+								<div id="chat-form"><input type="text" v-model="message" class="form-control"
+										placeholder="输入消息">
+									<button @click="sendMsg()" @keyup.enter="sendMsg()" class="btn btn-primary"><i
+											class="fa fa-paper-plane"></i></button></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/socket/socket.io.js"></script>
+	<script>
+		//var socket = io.connect('http://192.168.3.20:8081');
+		var socket = io.connect('http://localhost:8082');
+		new Vue({
+			el: '#app',
+			data: {
+				message: '',
+				welcome: "欢迎进入聊天室！",
+				messageList: [],
+				user: '',
+				users: [],
+				currentTime: '', //当前时间
+				show: false,
+				emot_num: 75,
+				emot_list: []
+			},
+			created() {
+				window.addEventListener('keydown', this.KeyUpEnter, true)//开启监听键盘按下事件
+			},
+			mounted: function () {
+				//初始化方法
+				var _this = this;
+				//默认生成表情列表
+				for (i = 1; i <= _this.emot_num; i++) {
+					var emot = new Object()
+					emot.id = i;
+					emot.src = "assets/emot/" + i + ".gif";
+					_this.emot_list.push(emot);
+				}
+				//获取后台session
+				axios({
+					method: 'get',
+					url: '/getUserSession'
+				})
+					.then((res) => {
+						if (res.data.code == 200) {
+							_this.user = res.data.data;
+							var name = _this.user;
+
+							//发送昵称给后端
+							socket.emit("join", name)
+							//新用户上线提示
+							socket.on("join", function (data) {
+								var msg = "系统消息： " + "用户 " + data.user + " 进入了聊天室";
+								_this.getCurrentTime()
+								var newdata = { user: data.user, msg: msg, time: _this.currentTime }
+								addLine(newdata)
+								console.log(data.user + "进入")
+								_this.users = data.users
+							})
+							//用户下线
+							socket.on("offline", (data) => {
+								_this.users = data.users
+								var msg = data.username + " 离开了聊天室"
+								_this.getCurrentTime()
+								addLine({ user: data.user, msg: msg, time: _this.currentTime })
+							})
+							//从后端接收消息
+							socket.on('chat message', function (data) {
+								addLine(data);
+								_this.scrollToBottom();
+							});
+
+							//自定义添加一行信息：新上线用户
+							function addLine(msg) {
+								_this.messageList.push(msg);
+								_this.message = "";
+							}
+
+						} else {
+							console.log(res.data.code)
+						}
+					})
+					.catch(function (err) {
+						console.log(err);
+					})
+			},
+			methods: {
+				sendMsg() {
+					if (this.message == null || this.message == "") {
+						return;
+					}
+					var msg = this.user + "说: " + this.replace_em(this.message);
+					console.log("发送的消息内容是："+msg)
+					this.getCurrentTime();
+					var posttime = this.currentTime
+					//data = {user:this.user,msg:this.message,time:posttime}
+					socket.emit('chat message', { user: this.user, msg: msg, time: posttime });
+
+				},
+				sayTo(e) {
+					var el = e.currentTarget;
+					this.message = "";
+					this.message = "对 " + el.innerHTML + " "
+				},
+				KeyUpEnter(e) {
+					if (window.event.keyCode === 13) {
+						this.sendMsg()
+					}
+				},
+				scrollToBottom() {
+					this.$nextTick(() => {
+						var container = this.$el.querySelector(".chat-content");
+						container.scrollTop = container.scrollHeight;
+					})
+				},
+				getCurrentTime() {
+					var _this = this;
+					let hh = new Date().getHours();
+					let mf = new Date().getMinutes() < 10 ? '0' + new Date().getMinutes() : new Date().getMinutes();
+					let ss = new Date().getSeconds() < 10 ? '0' + new Date().getSeconds() : new Date().getSeconds();
+					_this.currentTime = hh + ':' + mf + ':' + ss;
+
+				},
+				show_emot() {
+					this.show = !this.show
+				},
+				select_emot(e) {
+					//根据点击表情id生成快捷文字 
+					var el = e
+					var em_text = "[em_" + el + "]";
+					//关闭表情选择器并将内容赋值到input表签内
+					this.show = false;
+					//console.log("test:"+em_text)
+					//console.log(this.replace_em(testdata))
+					this.message += em_text;
+
+				},
+				//查看显示结果
+				replace_em(str) {
+					str = str.replace(/\</g, '&lt;');
+
+					str = str.replace(/\>/g, '&gt;');
+
+					str = str.replace(/\n/g, '<br/>');
+
+					str = str.replace(/\[em_([0-9]*)\]/g, '<img src="assets/emot/$1.gif" border="0" />');
+
+					return str;
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>

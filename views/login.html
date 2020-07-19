@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>聊天室登录窗口</title>
+	<script src="js/vue.min.js"></script>
+	<script src="js/axios.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="assets/css/login.css" />
+</head>
+
+<body>
+	<div id="app">
+		<div class="row">
+			<div class="home-header">
+				<h1>简易聊天室</h1>
+			</div>
+		</div>
+		<div class="container">
+			<div class="login_panel">
+				
+				<div class="">
+					<input id="user" class="form-control" v-model="username" placeholder="请您输入昵称" type="text"><button type="button" @click="login()" v-on:keyup.13="login()" class="btn btn-primary">确认</button>
+				</div>
+				<div class="">
+					
+				</div>
+				
+			</div>
+		</div>
+	</div>
+	<script>
+		new Vue({
+			el: '#app',
+			data: {
+				username: ''
+			},
+			created() {
+				window.addEventListener('keydown', this.KeyUpEnter, true)//开启监听键盘按下事件
+			},
+			methods: {
+				login() {
+					console.log(this.username);
+					axios({
+						method: 'post',
+						url: '/validatelogin',
+						data: {
+							username: this.username
+						}
+					})
+						.then((res) => {
+							if (res.data.code == 200) {
+								window.location.href = res.data.url
+							} else {
+								console.log("后台session:" + res.data.code)
+							}
+						})
+						.catch(function (err) {
+							console.log(err);
+						})
+				},
+				KeyUpEnter(e) {
+					if (window.event.keyCode === 13) {
+						this.login()
+					}
+				}
+			}
+		})
+	</script>
+</body>
+
+</html>
