@@ -59,9 +59,10 @@
 	}
 	
 	.home-header {
-		max-width: 1024px;
+		text-align: center;
 		margin: 0 auto;
 		height: 50px;
+		line-height: 50px;
 		padding: 15px 0;
 	}
 	
@@ -262,7 +263,7 @@
 	
 	.chat-box .chat-content {
 		background-color: #f9f9f9 !important;
-		height: 500px;
+		height: 300px;
 		overflow: hidden;
 		padding-top: 25px !important;
 	}
