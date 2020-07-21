@@ -10,10 +10,10 @@
 	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css" />
 	<!-- 引入样式 -->
 	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-	<!-- 引入组件库 -->
-	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<!-- 引入组件库 -->	
 	<script src="js/vue.min.js"></script>
 	<script src="js/axios.min.js"></script>
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 
 
@@ -26,45 +26,41 @@
 				</div>
 			</el-header>
 			<el-container>
-				<el-aside width="200px">
-					<el-row :gutter="20">
-						
-							<!-- 用户列表侧边栏 -->
-							<div class="my_ulist">
-								<div class="card">
-									<div class="body">
-										<div class="chat-header">
-											<h2>在线人数：{{UserList_Num}}</h2>
-										</div>
-										<div class=".m-b-20">
-											<div id="u-list" class="u-list">
-												<div id="chat-scroll" tabindex="1"
-													style="height: 450px; overflow-y:auto; outline: none;">
-													<ul id="ulist" class="chat-list list-unstyled m-b-0">
-														<li v-for="(user,index) in users" :key="index" class="clearfix">
-															<img v-bind:src="user.userimg" alt="avatar">
-															<div class="about">
-																<div class="name" v-cloak>{{user.username}}</div>
-																<div class="status"><i class="fa fa-circle online"></i>
-																	在线
-																</div>
+				<el-row :gutter="20">
+					<el-col :span="8">
+						<!-- 用户列表侧边栏 -->
+						<div class="my_ulist">
+							<div class="card">
+								<div class="body">
+									<div class="chat-header">
+										<h2>在线人数：{{UserList_Num}}</h2>
+									</div>
+									<div class=".m-b-20">
+										<div id="u-list" class="u-list">
+											<div id="chat-scroll" tabindex="1"
+												style="height: 450px; overflow-y:auto; outline: none;">
+												<ul id="ulist" class="chat-list list-unstyled m-b-0">
+													<li v-for="(user,index) in users" :key="index" class="clearfix">
+														<img v-bind:src="user.userimg" alt="avatar">
+														<div class="about">
+															<div class="name" v-cloak>{{user.username}}</div>
+															<div class="status"><i class="fa fa-circle online"></i>
+																在线
 															</div>
-														</li>
+														</div>
+													</li>
 
-													</ul>
-												</div>
+												</ul>
 											</div>
 										</div>
-
 									</div>
+
 								</div>
 							</div>
-						
-					</el-row>
-
-				</el-aside>
-				<el-main>
-					<!-- 聊天主窗口 -->
+						</div>
+					</el-col>
+					<el-col :span="16">
+						<!-- 聊天主窗口 -->
 					<div class="my_chatbody">
 						<div class="card">
 							<div class="chat">
@@ -124,7 +120,8 @@
 							</div>
 						</div>
 					</div>
-				</el-main>
+					</el-col>
+				  </el-row>				
 			</el-container>
 		</el-container>
 
