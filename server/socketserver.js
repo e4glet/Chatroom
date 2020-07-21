@@ -40,10 +40,10 @@ function socketserver(ports) {
         })
 
         //同步用户列表信息
-        socket.on("UserList", function (name) {            
-            //广播告诉除自己以外的人
-            io.emit('UserList',users)            
-        })
+        // socket.on("UserList", function (name) {            
+        //     //广播告诉除自己以外的人
+        //     io.emit('UserList',users)            
+        // })
 
         //监听用户下线
         socket.on('disconnect',()=>{            

@@ -8,6 +8,10 @@
 	<meta http-equiv="x-ua-compatible" content="IE=edge" />
 	<link rel="stylesheet" type="text/css" href="assets/css/base.css" />
 	<link rel="stylesheet" type="text/css" href="assets/css/font-awesome.min.css" />
+	<!-- 引入样式 -->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<!-- 引入组件库 -->
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 	<script src="js/vue.min.js"></script>
 	<script src="js/axios.min.js"></script>
 </head>
@@ -15,104 +19,116 @@
 
 <body>
 	<div id="app">
-		<div class="row">
-			<div class="home-header">
-				<h1>简易聊天室</h1>
-			</div>
-		</div>
-		<div class="container">
-			<div class="main_content clearfix">
-				<div class="my_ulist">
-					<div class="card">
-						<div class="body">
-							<div class="chat-header">
-								<h2>用户列表：</h2>
-							</div>
-							<div class=".m-b-20">
-								<div id="u-list" class="u-list">
-									<div id="chat-scroll" tabindex="1"
-										style="height: 450px; overflow-y:auto; outline: none;">
-										<ul id="ulist" class="chat-list list-unstyled m-b-0">
-											<li v-for="(user,index) in users" :key="index" class="clearfix"><img
-													v-bind:src="user.userimg" alt="avatar">
-												<div class="about">
-													<div class="name" v-cloak>{{user.username}}</div>
-													<div class="status"><i class="fa fa-circle online"></i> 在线 </div>
+		<el-container>
+			<el-header>
+				<div class="home-header">
+					<h1>简易聊天室</h1>
+				</div>
+			</el-header>
+			<el-container>
+				<el-aside width="200px">
+					<el-row :gutter="20">
+						
+							<!-- 用户列表侧边栏 -->
+							<div class="my_ulist">
+								<div class="card">
+									<div class="body">
+										<div class="chat-header">
+											<h2>在线人数：{{UserList_Num}}</h2>
+										</div>
+										<div class=".m-b-20">
+											<div id="u-list" class="u-list">
+												<div id="chat-scroll" tabindex="1"
+													style="height: 450px; overflow-y:auto; outline: none;">
+													<ul id="ulist" class="chat-list list-unstyled m-b-0">
+														<li v-for="(user,index) in users" :key="index" class="clearfix">
+															<img v-bind:src="user.userimg" alt="avatar">
+															<div class="about">
+																<div class="name" v-cloak>{{user.username}}</div>
+																<div class="status"><i class="fa fa-circle online"></i>
+																	在线
+																</div>
+															</div>
+														</li>
+
+													</ul>
 												</div>
-											</li>
-
-										</ul>
-									</div>
-								</div>
-							</div>
-
-						</div>
-					</div>
-				</div>
-				<div class="my_chatbody">
-					<div class="card">
-						<div class="chat">
-							<div class="chat-header clearfix">
-								<div class="home-ico">
-									<i class="fa fa-home" aria-hidden="true"></i>
-								</div>
-								<div class="chat-about">
-									<div class="chat-with">消息窗口</div>
-									<div class="chat-num-messages" v-cloak>{{welcome}}</div>
-								</div>
-
-							</div>
-
-						</div>
-
-						<div class="chat-box" id="mychatbox">
-							<div class="card-body chat-content" tabindex="2"
-								style="overflow-y:scroll; ; outline: none;">
-								<div id="message">
-									<div v-for="(item,index) in messageList" :key="index" >
-										<div v-if="item.is_Self" class="chat-item chat-left" >
-											<img v-bind:src="item.userimg">
-											<div class="chat-details">
-												<div class="chat-text" v-html="item.msg"></div>
-												<div class="chat-time" v-cloak>{{item.time}}</div>
 											</div>
 										</div>
-										<div v-else class="chat-item chat-right" >
-											<img v-bind:src="item.userimg">
-											<div class="chat-details">
-												<div class="chat-text" v-html="item.msg"></div>
-												<div class="chat-time" v-cloak>{{item.time}}</div>
-											</div>
-										</div>
+
 									</div>
-									
 								</div>
 							</div>
-							<div id="form" class="card-footer chat-form">
-								<div class="chat-bar">
-									<i @click="show_emot()" class="fa fa-smile-o"></i>
-									<div v-if="show" class="chat-emotion">
-										<ul class="emot-list clearfix">
-											<li v-for="(item,index) in emot_list" :key="index">
-												<img @click="select_emot(item.id)" v-bind:alt="item.id"
-													v-bind:src="item.src" />
-											</li>
-										</ul>
+						
+					</el-row>
+
+				</el-aside>
+				<el-main>
+					<!-- 聊天主窗口 -->
+					<div class="my_chatbody">
+						<div class="card">
+							<div class="chat">
+								<div class="chat-header clearfix">
+									<div class="home-ico">
+										<i class="fa fa-home" aria-hidden="true"></i>
+									</div>
+									<div class="chat-about">
+										<div class="chat-with">消息窗口</div>
+										<div class="chat-num-messages" v-cloak>{{welcome}}</div>
 									</div>
 								</div>
-								<div id="chat-form"><input type="text" maxlength="50" v-model="message" class="form-control"
-										placeholder="输入消息">
-									<button @click="sendMsg()" @keyup.enter="sendMsg()" class="btn btn-primary"><i
-											class="fa fa-paper-plane"></i></button></div>
-											<div class="chat-tip">
-												Enter 发送消息
+							</div>
+							<div class="chat-box" id="mychatbox">
+								<div class="card-body chat-content" tabindex="2"
+									style="overflow-y:scroll; ; outline: none;">
+									<div id="message">
+										<div v-for="(item,index) in messageList" :key="index">
+											<div v-if="item.is_Self" class="chat-item chat-left">
+												<img v-bind:src="item.userimg">
+												<div class="chat-details">
+													<div class="chat-text" v-html="item.msg"></div>
+													<div class="chat-time" v-cloak>{{item.time}}</div>
+												</div>
 											</div>
+											<div v-else class="chat-item chat-right">
+												<img v-bind:src="item.userimg">
+												<div class="chat-details">
+													<div class="chat-text" v-html="item.msg"></div>
+													<div class="chat-time" v-cloak>{{item.time}}</div>
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+								<div id="form" class="card-footer chat-form">
+									<div class="chat-bar">
+										<i @click="show_emot()" class="fa fa-smile-o"></i>
+										<div v-if="show" class="chat-emotion">
+											<ul class="emot-list clearfix">
+												<li v-for="(item,index) in emot_list" :key="index">
+													<img @click="select_emot(item.id)" v-bind:alt="item.id"
+														v-bind:src="item.src" />
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div id="chat-form"><input type="text" maxlength="50" v-model="message"
+											class="form-control" placeholder="输入消息">
+										<button @click="sendMsg()" @keyup.enter="sendMsg()" class="btn btn-primary"><i
+												class="fa fa-paper-plane"></i></button></div>
+									<div class="chat-tip">
+										Enter 发送消息
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
-		</div>
+				</el-main>
+			</el-container>
+		</el-container>
+
+
 	</div>
 	<script src="/socket/socket.io.js"></script>
 	<script>
@@ -122,18 +138,19 @@
 			el: '#app',
 			data: {
 				message: '',
-				my_img:'',
+				my_img: '',
 				welcome: "欢迎进入聊天室！",
 				messageList: [],
 				user: '',
 				users: [],
+				UserList_Num: 0,
 				currentTime: '', //当前时间
 				show: false,
 				emot_num: 75,
 				emot_list: []
 			},
 			created() {
-				window.addEventListener('keydown', this.KeyUpEnter, true)//开启监听键盘按下事件
+				window.addEventListener('keydown', this.KeyUpEnter, true) //开启监听键盘按下事件
 			},
 			mounted: function () {
 				//初始化方法
@@ -147,9 +164,9 @@
 				}
 				//获取后台session
 				axios({
-					method: 'get',
-					url: '/getUserSession'
-				})
+						method: 'get',
+						url: '/getUserSession'
+					})
 					.then((res) => {
 						if (res.data.code == 200) {
 							//从session中获取用户信息
@@ -157,7 +174,7 @@
 							_this.my_img = res.data.data.userimg;
 							var name = _this.user;
 
-							var userInfo =new Object();
+							var userInfo = new Object();
 							userInfo.username = name;
 							userInfo.userimg = _this.my_img;
 
@@ -168,39 +185,52 @@
 							socket.on("join", function (data) {
 								var username = data.user;
 								var msg = "系统消息： " + "用户 " + username + " 进入了聊天室";
+								_this.UserList_Num = data.users.length;
 								_this.getCurrentTime()
-								var newdata = { user: username,userimg:"assets/img/users/message.jpg", msg: msg, time: _this.currentTime,is_Self:true }
+								var newdata = {
+									user: username,
+									userimg: "assets/img/users/message.jpg",
+									msg: msg,
+									time: _this.currentTime,
+									is_Self: true
+								}
 								addLine(newdata)
-								
+
 								_this.users = data.users
 							})
 							//用户下线
 							socket.on("offline", (data) => {
 								_this.users = data.users
 								var msg = data.username + " 离开了聊天室"
+								_this.UserList_Num = data.users.length
 								_this.getCurrentTime()
-								addLine({ user: data.user,userimg:"assets/img/users/message.jpg", msg: msg, time: _this.currentTime,is_Self:true})
+								addLine({
+									user: data.user,
+									userimg: "assets/img/users/message.jpg",
+									msg: msg,
+									time: _this.currentTime,
+									is_Self: true
+								})
 							})
 							//从后端接收消息
 							socket.on('chat message', function (data) {
-								var filterdata=new Object();
+								var filterdata = new Object();
 								filterdata.user = data.user;
 								filterdata.msg = data.msg;
 								filterdata.time = data.time;
-								if(data.user==_this.user){
-									data.is_Self=false
-								}else{
-									data.is_Self=true
+								if (data.user == _this.user) {
+									data.is_Self = false
+								} else {
+									data.is_Self = true
 								}
 								addLine(data);
 								_this.scrollToBottom();
-								
+
 							});
 
 							//自定义添加一行信息：新上线用户
 							function addLine(msg) {
 								_this.messageList.push(msg);
-								_this.message = "";
 							}
 
 						} else {
@@ -219,10 +249,15 @@
 					var msg = this.user + "说: " + this.replace_em(this.message);
 					//console.log("发送的消息内容是：" + msg)
 					this.getCurrentTime();
-					var posttime = this.currentTime					
+					var posttime = this.currentTime
 					//data = {user:this.user,msg:this.message,time:posttime}
-					socket.emit('chat message', { user: this.user,userimg:this.my_img, msg: msg, time: posttime });
-
+					socket.emit('chat message', {
+						user: this.user,
+						userimg: this.my_img,
+						msg: msg,
+						time: posttime
+					});
+					this.message = "";
 				},
 				sayTo(e) {
 					var el = e.currentTarget;
